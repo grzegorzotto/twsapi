@@ -23,6 +23,7 @@ if(${CMAKE_BUILD_TYPE} STREQUAL "Debug")
     message(STATUS "Setting libCXX debug flag")
 endif()
 
+add_subdirectory(libbid)
 add_subdirectory("source")
 option(IBKR_BUILD_TESTCPPCLIENT "Whether or not to build the TWS API example/test client" FALSE)
 if( IBKR_BUILD_TESTCPPCLIENT )

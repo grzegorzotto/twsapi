@@ -3,12 +3,13 @@ file(GLOB HEADERS "*.h")
 set(twsapi_VERSION 9.79.02)
 add_library(twsapi SHARED ${SOURCES})
 # On Windows (including MinGW), link against Winsock 2
+
+set(LIBS LibBid)
+
 if( WIN32 )
-    target_link_libraries( twsapi
-        PUBLIC
-        ws2_32
-    )
+    set(LIBS ${LIBS} ws2_32)
 endif()
+target_link_libraries(twsapi ${LIBS})
 if( MSVC )
     target_compile_options( twsapi PRIVATE /W3 )
 else()
