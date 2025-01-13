@@ -1,10 +1,10 @@
-cmake_minimum_required(VERSION 3.0)
+cmake_minimum_required(VERSION 3.22)
 project( IBKR LANGUAGES CXX )
 if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE "Debug")
 endif()
 
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # For some reason cmake/ninja checks whether the system headers have changed, causing the entire project to rebuild each time
@@ -23,65 +23,12 @@ if(${CMAKE_BUILD_TYPE} STREQUAL "Debug")
     message(STATUS "Setting libCXX debug flag")
 endif()
 
-option(ENABLE_LINTER "Run linter" OFF)
-option(ENABLE_LINTER_ERROR "Run linter with errors" OFF)
-if(${ENABLE_LINTER})
-    find_program(TIDY NAMES clang-tidy-10 clang-tidy)
-    if(${TIDY} STREQUAL "TIDY-NOTFOUND")
-        message(FATAL_ERROR "clang-tidy not found! Necessary for linting!")
-    else()
-        message(STATUS "Found clang-tidy in ${TIDY}")
-    endif()
-    if(${ENABLE_LINTER_ERROR})
-        set(CMAKE_CXX_CLANG_TIDY 
-            ${TIDY};
-            --warnings-as-errors=*;
-            --checks=readability-*,-readability-magic-numbers,performance-*,portability-*,modernize-*,-modernize-use-trailing-return-type,-cppcoreguidelines-*;
-        )
-        set(CMAKE_C_CLANG_TIDY 
-            ${TIDY};
-            --warnings-as-errors=*;
-            --checks=readability-*,-readability-magic-numbers,performance-*,portability-*,-clang-analyzer-security.insecureAPI.*;
-        )
-        add_compile_options(-Werror)
-    else()
-        set(CMAKE_CXX_CLANG_TIDY 
-            ${TIDY};
-            --checks=readability-*,-readability-magic-numbers,performance-*,portability-*,modernize-*,-modernize-use-trailing-return-type,-cppcoreguidelines-*;
-        )
-        set(CMAKE_C_CLANG_TIDY 
-            ${TIDY};
-            --checks=readability-*,-readability-magic-numbers,performance-*,portability-*,-clang-analyzer-security.insecureAPI.*;
-        )
-    endif()
-endif()
-
 add_subdirectory("source")
 option(IBKR_BUILD_TESTCPPCLIENT "Whether or not to build the TWS API example/test client" FALSE)
 if( IBKR_BUILD_TESTCPPCLIENT )
     find_package( Threads )
     add_subdirectory("samples")
 endif()
-
-set(CLANG_FORMAT_EXCLUDE_PATTERNS "build" "vcpkg")
-file(GLOB_RECURSE ALL_SOURCE_FILES *.cpp *.h *.c)
-foreach (SOURCE_FILE ${ALL_SOURCE_FILES})
-    foreach (EXCLUDE_PATTERN ${CLANG_FORMAT_EXCLUDE_PATTERNS})
-        string(FIND ${SOURCE_FILE} ${EXCLUDE_PATTERN} PROJECT_TRDPARTY_DIR_FOUND)
-        if (NOT ${PROJECT_TRDPARTY_DIR_FOUND} EQUAL -1)
-            list(REMOVE_ITEM ALL_SOURCE_FILES ${SOURCE_FILE})
-        endif ()
-    endforeach()
-endforeach ()
-
-find_program(FORMAT clang-format clang-format-10)
-add_custom_target(
-    format
-    COMMAND ${FORMAT}
-    -style=file
-    -i
-    ${ALL_SOURCE_FILES}
-)
 
 # install directories can be user defined
 set(INSTALL_LIB_DIR lib CACHE PATH "Installation directory for libraries.")
