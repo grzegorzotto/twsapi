@@ -48,27 +48,3 @@ endforeach()
 include_directories(
   "${PROJECT_SOURCE_DIR}"   # to find foo/foo.h
   "${PROJECT_BINARY_DIR}")  # to find foo/config.h
-
-export(TARGETS twsapi FILE "${PROJECT_BINARY_DIR}/twsapiConfig.cmake")
-export(PACKAGE twsapi)
-
-# Create the twsapiConfig.cmake and twsapiConfigVersion files
-file(RELATIVE_PATH REL_INCLUDE_DIR "${INSTALL_CMAKE_DIR}" "${INSTALL_INCLUDE_DIR}")
-# ... for the build tree
-set(CONF_INCLUDE_DIRS "${PROJECT_SOURCE_DIR}" "${PROJECT_BINARY_DIR}")
-configure_file(twsapiConfig.cmake.in "${PROJECT_BINARY_DIR}/twsapiConfig.cmake" @ONLY)
-# ... for the install tree
-set(CONF_INCLUDE_DIRS "\${twsapi_CMAKE_DIR}/${REL_INCLUDE_DIR}")
-configure_file(twsapiConfig.cmake.in "${PROJECT_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/twsapiConfig.cmake" @ONLY)
-# ... for both
-configure_file(twsapiConfigVersion.cmake.in "${PROJECT_BINARY_DIR}/twsapiConfigVersion.cmake" @ONLY)
-
-# Install the twsapiConfig.cmake and twsapiConfigVersion.cmake
-install(FILES
-  "${PROJECT_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/twsapiConfig.cmake"
-  "${PROJECT_BINARY_DIR}/twsapiConfigVersion.cmake"
-  DESTINATION "${INSTALL_CMAKE_DIR}" COMPONENT dev)
-
-# Install the export set for use with the install-tree
-install(EXPORT twsapi-targets DESTINATION
-  "${INSTALL_CMAKE_DIR}" COMPONENT dev)
