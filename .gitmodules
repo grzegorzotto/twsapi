@@ -1,0 +1,3 @@
+[submodule "libbid"]
+	path = libbid
+	url = git@github.com:grzegorzotto/libbid.git
