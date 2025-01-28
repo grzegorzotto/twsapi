@@ -24,11 +24,11 @@ if(${CMAKE_BUILD_TYPE} STREQUAL "Debug")
 endif()
 
 add_subdirectory(libbid)
-add_subdirectory("source")
+add_subdirectory(source)
 option(IBKR_BUILD_TESTCPPCLIENT "Whether or not to build the TWS API example/test client" FALSE)
 if( IBKR_BUILD_TESTCPPCLIENT )
     find_package( Threads )
-    add_subdirectory("samples")
+    add_subdirectory(samples)
 endif()
 
 # install directories can be user defined
