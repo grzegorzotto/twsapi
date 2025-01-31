@@ -23,5 +23,5 @@ set_target_properties(twsapi
     PUBLIC_HEADER "${HEADERS}"
 )
 
-target_include_directories(twsapi PUBLIC .)
+target_include_directories(twsapi PUBLIC ${PROJECT_SOURCE_DIR}/source)
 install(TARGETS twsapi EXPORT twsapi-targets PUBLIC_HEADER DESTINATION include/twsapi LIBRARY DESTINATION lib)
